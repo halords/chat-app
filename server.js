@@ -32,6 +32,9 @@ io.on('connection', (socket) => {
 // Define the port dynamically (Render uses process.env.PORT)
 const PORT = process.env.PORT || 3000;
 
-server.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+
+const port = process.env.PORT || 3000;
+server.listen(port, () => {
+  console.log(`Server running on port ${port}`);
+
 });
