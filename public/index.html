@@ -44,7 +44,7 @@
   </div>
 
   <!-- Chat Box Layout -->
-  <div id="chat-container" class="chat-container" style="display:none;">
+  <div id="chat-container" class="chat-container" style="display: none;">
     <div class="chat-area">
       <div id="chat-box" class="chat-box"></div>
     </div>
@@ -63,10 +63,21 @@
     let currentUser = null;
     let chatHistory = [];
 
+    // Check if a username is already stored
+    window.onload = function() {
+      currentUser = localStorage.getItem('username');
+      if (currentUser) {
+        document.getElementById('name-input').style.display = 'none';
+        document.getElementById('chat-container').style.display = 'flex';
+        loadPreviousConversation();
+      }
+    };
+
     // Show chat and inputs after starting chat
     document.getElementById('start-chat').addEventListener('click', function() {
       currentUser = document.getElementById('username').value;
       if (currentUser) {
+        localStorage.setItem('username', currentUser); // Save username to localStorage
         document.getElementById('name-input').style.display = 'none';
         document.getElementById('chat-container').style.display = 'flex';
         loadPreviousConversation();
@@ -133,15 +144,15 @@
       document.getElementById('chat-box').appendChild(linkElement);
     }
 
-    // Temporarily store conversation in SessionStorage
+    // Temporarily store conversation
     function saveConversation(data) {
       chatHistory.push(data);
-      sessionStorage.setItem('chatHistory', JSON.stringify(chatHistory));
+      localStorage.setItem('chatHistory', JSON.stringify(chatHistory));
     }
 
-    // Load previous conversation from SessionStorage if exists
+    // Load previous conversation if exists
     function loadPreviousConversation() {
-      const storedHistory = sessionStorage.getItem('chatHistory');
+      const storedHistory = localStorage.getItem('chatHistory');
       if (storedHistory) {
         chatHistory = JSON.parse(storedHistory);
         chatHistory.forEach(data => {
