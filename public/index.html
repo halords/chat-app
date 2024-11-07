@@ -44,7 +44,7 @@
   </div>
 
   <!-- Chat Box Layout -->
-  <div id="chat-container" class="chat-container">
+  <div id="chat-container" class="chat-container" style="display:none;">
     <div class="chat-area">
       <div id="chat-box" class="chat-box"></div>
     </div>
@@ -133,15 +133,15 @@
       document.getElementById('chat-box').appendChild(linkElement);
     }
 
-    // Temporarily store conversation
+    // Temporarily store conversation in SessionStorage
     function saveConversation(data) {
       chatHistory.push(data);
-      localStorage.setItem('chatHistory', JSON.stringify(chatHistory));
+      sessionStorage.setItem('chatHistory', JSON.stringify(chatHistory));
     }
 
-    // Load previous conversation if exists
+    // Load previous conversation from SessionStorage if exists
     function loadPreviousConversation() {
-      const storedHistory = localStorage.getItem('chatHistory');
+      const storedHistory = sessionStorage.getItem('chatHistory');
       if (storedHistory) {
         chatHistory = JSON.parse(storedHistory);
         chatHistory.forEach(data => {
