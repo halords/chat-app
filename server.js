@@ -1,49 +1,37 @@
-// server.js
 const express = require('express');
 const http = require('http');
-const WebSocket = require('ws');
-const { v4: uuidv4 } = require('uuid');
+const socketIo = require('socket.io');
+const path = require('path');
 
 const app = express();
 const server = http.createServer(app);
-const wss = new WebSocket.Server({ server });
+const io = socketIo(server);
 
-app.use(express.static('public'));
+// Serve static files (index.html, js, css)
+app.use(express.static(path.join(__dirname, 'public')));
 
-const users = {};
-const clicksLog = [];
+// Set up Socket.IO communication
+io.on('connection', (socket) => {
+  console.log('a user connected');
 
-wss.on('connection', (ws) => {
-  const userID = uuidv4();
-  const username = `User-${userID.slice(0, 5)}`;
-  users[userID] = username;
-
-  ws.send(JSON.stringify({ type: 'welcome', userID, username }));
-
-  ws.on('message', (message) => {
-    const data = JSON.parse(message);
-
-    if (data.type === 'chat') {
-      broadcast({ type: 'chat', user: username, message: data.message });
-    } else if (data.type === 'link') {
-      clicksLog.push({ user: username, link: data.link });
-      broadcast({ type: 'log', message: `${username} clicked ${data.link}` });
-    }
+  // Listen for messages from clients
+  socket.on('message', (data) => {
+    io.emit('message', data);  // Broadcast message to all connected clients
   });
 
-  ws.on('close', () => {
-    delete users[userID];
+  // Listen for links from clients
+  socket.on('link', (data) => {
+    io.emit('link', data);  // Broadcast link to all connected clients
+  });
+
+  socket.on('disconnect', () => {
+    console.log('user disconnected');
   });
 });
 
-function broadcast(data) {
-  wss.clients.forEach((client) => {
-    if (client.readyState === WebSocket.OPEN) {
-      client.send(JSON.stringify(data));
-    }
-  });
-}
+// Define the port dynamically (Render uses process.env.PORT)
+const PORT = process.env.PORT || 3000;
 
-server.listen(3000, () => {
-  console.log('Server running on http://localhost:3000');
+server.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
