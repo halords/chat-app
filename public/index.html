@@ -7,30 +7,80 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
     /* Custom styles for chat and input box */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+    }
+
+    /* Main chat container */
+    .chat-box-container {
+      margin-bottom: 20px;
+    }
+
     .chat-box {
       height: 400px;
       overflow-y: scroll;
       border: 1px solid #ccc;
       padding: 10px;
+      background-color: #fff;
+      border-radius: 10px;
       margin-bottom: 10px;
     }
+
     .chat-container {
       display: flex;
       flex-direction: row;
       gap: 20px;
     }
+
     .input-container {
       flex-grow: 1;
     }
+
     .chat-area {
       flex-grow: 2;
     }
+
+    /* Message bubbles */
     .message {
-      margin-bottom: 10px;
+      margin-bottom: 15px;
+      display: inline-block;
+      max-width: 60%;
+      padding: 10px;
+      border-radius: 20px;
+      word-wrap: break-word;
     }
+
+    .message.user {
+      background-color: #4CAF50;
+      color: white;
+      margin-left: auto;
+    }
+
+    .message.system {
+      background-color: #f1f1f1;
+      color: black;
+      margin-right: auto;
+    }
+
     .username {
       font-weight: bold;
     }
+
+    .link-message {
+      font-size: 14px;
+      margin-bottom: 15px;
+    }
+
+    /* User input area styles */
+    .input-container textarea {
+      border-radius: 10px;
+    }
+
+    .input-container input {
+      border-radius: 10px;
+    }
+
   </style>
 </head>
 <body class="container my-4">
@@ -45,9 +95,21 @@
 
   <!-- Chat Box Layout -->
   <div id="chat-container" class="chat-container" style="display: none;">
+    <!-- Chat Box for Text Messages -->
     <div class="chat-area">
-      <div id="chat-box" class="chat-box"></div>
+      <div id="chat-box" class="chat-box-container">
+        <div id="chat-box-text" class="chat-box"></div>
+      </div>
     </div>
+
+    <!-- Chat Box for Links -->
+    <div class="chat-area">
+      <div id="chat-box-links" class="chat-box-container">
+        <div id="chat-box-link" class="chat-box"></div>
+      </div>
+    </div>
+
+    <!-- Input Area -->
     <div class="input-container">
       <textarea id="message" class="form-control" rows="5" placeholder="Type your message..."></textarea>
       <input type="text" id="link-input" class="form-control mt-2" placeholder="Paste a link here...">
@@ -133,17 +195,17 @@
     // Display message in the chat box
     function displayMessage(data) {
       const messageElement = document.createElement('div');
-      messageElement.classList.add('message');
+      messageElement.classList.add('message', 'system');
       messageElement.innerHTML = `<span class="username">${data.user}:</span> ${data.text}`;
-      document.getElementById('chat-box').appendChild(messageElement);
+      document.getElementById('chat-box-text').appendChild(messageElement);
     }
 
     // Display link in the chat box
     function displayLink(data) {
       const linkElement = document.createElement('div');
-      linkElement.classList.add('message');
+      linkElement.classList.add('message', 'system', 'link-message');
       linkElement.innerHTML = `<span class="username">${data.user}:</span> <a href="${data.link}" target="_blank">${data.link}</a>`;
-      document.getElementById('chat-box').appendChild(linkElement);
+      document.getElementById('chat-box-link').appendChild(linkElement);
     }
 
     // Temporarily store conversation
