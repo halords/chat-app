@@ -34,7 +34,7 @@
   </style>
 </head>
 <body class="container my-4">
-  <h2>Live Chat</h2>
+  <h2>Live Chat <span id="display-username" style="font-weight: normal;"></span></h2>
 
   <!-- User Name Input -->
   <div id="name-input" class="mb-3">
@@ -69,6 +69,7 @@
       if (currentUser) {
         document.getElementById('name-input').style.display = 'none';
         document.getElementById('chat-container').style.display = 'flex';
+        document.getElementById('display-username').textContent = `(${currentUser})`; // Display username
         loadPreviousConversation();
       }
     };
@@ -80,6 +81,7 @@
         localStorage.setItem('username', currentUser); // Save username to localStorage
         document.getElementById('name-input').style.display = 'none';
         document.getElementById('chat-container').style.display = 'flex';
+        document.getElementById('display-username').textContent = `(${currentUser})`; // Display username
         loadPreviousConversation();
       }
     });
